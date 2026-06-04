@@ -78,11 +78,52 @@ class ProjectController extends Controller
     }
 
     /**
+     *  Show the form for editing the specified resource
+     */
+    public function edit(Project $project)
+    {
+
+        return view('admin.projects.edit', compact('project'));
+    }
+
+    /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Project $project)
     {
-        //
+        // validazione identica allo store, ad eccezione per il titolo!
+        $request->validate([
+            // il titolo deve essere unico, ma ignora quello del progetto che sto modificando => $project->id
+            'title' => 'required|string|max:150|unique:projects,title,' . $project->id,
+            'description' => 'nullable|string|min:10',
+            'image' => 'nullable|url|max:255',
+            'link_github' => 'nullable|url|max:255',
+            'link_website' => 'nullable|url|max:255',
+        ], [
+            // notifiche personalizzate
+            'title.required' => 'Hai dimenticato di inserire il titolo! È un campo obbligatorio.',
+            'title.unique' => 'Questo titolo è già stato utilizzato per un altro progetto.',
+            'title.max' => 'Il titolo è troppo lungo, usa massimo 150 caratteri.',
+            'description.min' => 'La descrizione deve contenere almeno 10 caratteri.',
+            'image.url' => 'L\'indirizzo dell\'immagine non è valido. Deve iniziare con http:// o https://',
+            'image.max' => 'L\'indirizzo del link fornito è troppo lungo, usa massimo 255 caratteri',
+            'link_github.url' => 'L\'indirizzo del link non è valido. Deve iniziare con http:// o https://',
+            'link_github.max' => 'L\'indirizzo del link fornito è troppo lungo, usa massimo 255 caratteri',
+            'link_website.url' => 'L\'indirizzo del link non è valido. Deve iniziare con http:// o https://',
+            'link_website.max' => 'L\'indirizzo del link fornito è troppo lungo, usa massimo 255 caratteri',
+        ]);
+
+        // 2. Prendiamo i dati sicuri
+        $data = $request->all();
+
+        // 3. Se l'utente ha cambiato il titolo, dobbiamo ricalcolare lo slug
+        $data['slug'] = Str::slug($data['title'], '-');
+
+        // 4. Invece di Project::create(), usiamo update() sull'oggetto esistente
+        $project->update($data);
+
+        // 5. Torniamo alla lista
+        return redirect()->route('admin.projects.index')->with('success', 'Progetto modificato con successo!');
     }
 
     /**
@@ -90,6 +131,6 @@ class ProjectController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        return redirect()->route('admin.projects.index')->with('success', 'Progetto eliminato con successo!');
     }
 }

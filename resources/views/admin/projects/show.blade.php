@@ -4,10 +4,20 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
         <a href="{{ route('admin.projects.index') }}" class="btn btn-secondary btn-sm">
             <i class="bi bi-arrow-left"></i> Torna alla lista
         </a>
+
+        <div class="d-flex gap-2">
+            <a href="{{ route('admin.projects.edit', $project) }}" class="btn btn-warning btn-sm text-dark">
+                <i class="bi bi-pencil me-1"></i> Modifica Progetto
+            </a>
+
+            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModalShow">
+                <i class="bi bi-trash me-1"></i> Elimina
+            </button>
+        </div>
     </div>
 
     <div class="card shadow-sm">
@@ -41,6 +51,29 @@
                         @endif
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModalShow" tabindex="-1" aria-labelledby="deleteModalShowLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalShowLabel">Conferma Eliminazione</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-start">
+                Sei sicuro di voler eliminare definitivamente il progetto <strong>{{ $project->title }}</strong>? Verrai reindirizzato alla lista generale.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+
+                <form action="{{ route('admin.projects.destroy', $project) }}" method="POST" class="m-0">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Sì, elimina</button>
+                </form>
             </div>
         </div>
     </div>
