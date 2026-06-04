@@ -45,17 +45,6 @@ class ProjectController extends Controller
         return view('admin.projects.show', compact('project'));
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function show(Project $project) // Usiamo la Dependency Injection
-    {
-        // Passiamo il singolo progetto alla vista "show"
-        return view('admin.projects.show', compact('project'));
-    }
-}
-
     /**
      * Update the specified resource in storage.
      */
