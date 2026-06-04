@@ -6,8 +6,13 @@
 <div class="card p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3>Lista Progetti</h3>
-        <button class="btn btn-primary btn-sm">Aggiungi Progetto</button>
+        <a href="{{ route('admin.projects.create') }}" class="btn btn-primary btn-sm">Aggiungi Progetto</a>
     </div>
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @endif
 
     <table class="table table-hover align-middle">
         <thead class="table-dark">
