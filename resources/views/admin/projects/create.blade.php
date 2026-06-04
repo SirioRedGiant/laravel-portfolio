@@ -36,6 +36,25 @@
             </div>
 
             <div class="mb-3">
+                <label for="type_id" class="form-label">Tipologia di Progetto</label>
+                <select class="form-select @error('type_id') is-invalid @enderror" id="type_id" name="type_id">
+                    <option value="">Seleziona una tipologia (Opzionale)</option>
+
+                    @foreach($types as $type)
+                    <option value="{{ $type->id }}" {{ old('type_id') == $type->id ? 'selected' : '' }}>
+                        {{ $type->name }}
+                    </option>
+                    @endforeach
+                </select>
+
+                @error('type_id')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
                 <label for="description" class="form-label">Descrizione</label>
                 <textarea class="form-control @error('description') is-invalid @enderror"
                     id="description"

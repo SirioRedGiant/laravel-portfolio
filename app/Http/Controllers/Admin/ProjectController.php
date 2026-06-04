@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Str; // la classe Str che serve per generare lo slug automaticamente dal titolo
+use Illuminate\Support\Str; // la classe Str che serve per generare lo slug automaticamente dal titolo --> strumento per lo slug
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Models\Type;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -26,7 +27,9 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        return view('admin.projects.create');
+        $types = Type::all();
+
+        return view('admin.projects.create', compact('types'));
     }
 
     /**
@@ -41,6 +44,7 @@ class ProjectController extends Controller
             'image' => 'nullable|url|max:255',
             'link_github' => 'nullable|url|max:255',
             'link_website' => 'nullable|url|max:255',
+            'type_id' => 'nullable|exists:types,id', // exists:types,id --> evita che qualcuno manometta il form inviando ID inventati
         ], [
             // notifiche personalizzate
             'title.required' => 'Hai dimenticato di inserire il titolo! È un campo obbligatorio.',
@@ -53,6 +57,7 @@ class ProjectController extends Controller
             'link_github.max' => 'L\'indirizzo del link fornito è troppo lungo, usa massimo 255 caratteri',
             'link_website.url' => 'L\'indirizzo del link non è valido. Deve iniziare con http:// o https://',
             'link_website.max' => 'L\'indirizzo del link fornito è troppo lungo, usa massimo 255 caratteri',
+            'type_id.exists' => 'La tipologia selezionata non è valida o è stata manomessa.',
         ]);
 
         // ricava tutti i dati dal form
@@ -82,8 +87,9 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
+        $types = Type::all();
 
-        return view('admin.projects.edit', compact('project'));
+        return view('admin.projects.edit', compact('project', 'types'));
     }
 
     /**
@@ -99,6 +105,7 @@ class ProjectController extends Controller
             'image' => 'nullable|url|max:255',
             'link_github' => 'nullable|url|max:255',
             'link_website' => 'nullable|url|max:255',
+            'type_id' => 'nullable|exists:types,id',
         ], [
             // notifiche personalizzate
             'title.required' => 'Hai dimenticato di inserire il titolo! È un campo obbligatorio.',
@@ -111,6 +118,7 @@ class ProjectController extends Controller
             'link_github.max' => 'L\'indirizzo del link fornito è troppo lungo, usa massimo 255 caratteri',
             'link_website.url' => 'L\'indirizzo del link non è valido. Deve iniziare con http:// o https://',
             'link_website.max' => 'L\'indirizzo del link fornito è troppo lungo, usa massimo 255 caratteri',
+            'type_id.exists' => 'La tipologia selezionata non è valida o è stata manomessa.',
         ]);
 
         // 2. Prendiamo i dati sicuri
@@ -129,8 +137,9 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Project $project)
     {
+        $project->delete();
         return redirect()->route('admin.projects.index')->with('success', 'Progetto eliminato con successo!');
     }
 }

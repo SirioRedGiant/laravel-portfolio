@@ -32,6 +32,15 @@
                     <h2 class="card-title text-primary">{{ $project->title }}</h2>
                     <p class="text-muted mb-4"><strong>Slug:</strong> {{ $project->slug }}</p>
 
+                    <p class="mb-4">
+                        <strong>Tipologia:</strong>
+                        @if($project->type)
+                        <span class="badge bg-secondary text-white">{{ $project->type->name }}</span>
+                        @else
+                        <span class="badge bg-light text-dark">Nessuna tipologia</span>
+                        @endif
+                    </p>
+
                     <h5>Descrizione del Progetto:</h5>
                     <p class="card-text text-secondary" style="white-space: pre-line;">
                         {{ $project->description ?? 'Nessuna descrizione fornita per questo progetto.' }}
