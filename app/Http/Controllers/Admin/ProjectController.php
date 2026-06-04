@@ -37,10 +37,22 @@ class ProjectController extends Controller
         // validazione dei dati in ingresso
         $request->validate([
             'title' => 'required|string|max:150|unique:projects',
-            'description' => 'nullable|string',
+            'description' => 'nullable|string|min:10',
             'image' => 'nullable|url|max:255',
             'link_github' => 'nullable|url|max:255',
             'link_website' => 'nullable|url|max:255',
+        ], [
+            // notifiche personalizzate
+            'title.required' => 'Hai dimenticato di inserire il titolo! È un campo obbligatorio.',
+            'title.unique' => 'Questo titolo è già stato utilizzato per un altro progetto.',
+            'title.max' => 'Il titolo è troppo lungo, usa massimo 150 caratteri.',
+            'description.min' => 'La descrizione deve contenere almeno 10 caratteri.',
+            'image.url' => 'L\'indirizzo dell\'immagine non è valido. Deve iniziare con http:// o https://',
+            'image.max' => 'L\'indirizzo del link fornito è troppo lungo, usa massimo 255 caratteri',
+            'link_github.url' => 'L\'indirizzo del link non è valido. Deve iniziare con http:// o https://',
+            'link_github.max' => 'L\'indirizzo del link fornito è troppo lungo, usa massimo 255 caratteri',
+            'link_website.url' => 'L\'indirizzo del link non è valido. Deve iniziare con http:// o https://',
+            'link_website.max' => 'L\'indirizzo del link fornito è troppo lungo, usa massimo 255 caratteri',
         ]);
 
         // ricava tutti i dati dal form
