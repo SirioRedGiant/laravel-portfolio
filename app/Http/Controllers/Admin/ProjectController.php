@@ -38,7 +38,7 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         // validazione dei dati in ingresso
-        $request->validate([
+        $data = $request->validate([
             'title' => 'required|string|max:150|unique:projects',
             'description' => 'nullable|string|min:10',
             'image' => 'nullable|url|max:255',
@@ -61,7 +61,7 @@ class ProjectController extends Controller
         ]);
 
         // ricava tutti i dati dal form
-        $data = $request->all();
+        // $data = $request->all();
 
         // per generare lo slug in automatico partendo dal titolo
         $data['slug'] = Str::slug($data['title'], '-');
@@ -98,7 +98,7 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project)
     {
         // validazione identica allo store, ad eccezione per il titolo!
-        $request->validate([
+        $data = $request->validate([
             // il titolo deve essere unico, ma ignora quello del progetto che sto modificando => $project->id
             'title' => 'required|string|max:150|unique:projects,title,' . $project->id,
             'description' => 'nullable|string|min:10',
@@ -121,16 +121,15 @@ class ProjectController extends Controller
             'type_id.exists' => 'La tipologia selezionata non è valida o è stata manomessa.',
         ]);
 
-        // 2. Prendiamo i dati sicuri
-        $data = $request->all();
+        // così si prendono tutti i data, ma c'è la possibilità che vengano passati dati malevoli
+        // $data = $request->all();
 
-        // 3. Se l'utente ha cambiato il titolo, dobbiamo ricalcolare lo slug
+        // ricalcolo dello slug dato il titolo appena validato
         $data['slug'] = Str::slug($data['title'], '-');
 
-        // 4. Invece di Project::create(), usiamo update() sull'oggetto esistente
+        // aggiorna l'oggetto
         $project->update($data);
 
-        // 5. Torniamo alla lista
         return redirect()->route('admin.projects.index')->with('success', 'Progetto modificato con successo!');
     }
 
