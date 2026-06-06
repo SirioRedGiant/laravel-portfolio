@@ -2,16 +2,37 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Project;
 use Illuminate\Support\Facades\Route;
 
+
+//! Homepage pubblica
 Route::get('/', function () {
-    return view('welcome');
+    // recupero gli ultimi 3 progetti dal database.
+    // utilizzo --> 'with("type")' per ottimizzare le query (Eager Loading) che evita rallentamenti
+    //note L'eager loading è una tecnica di ottimizzazione dei database che permette di caricare i dati correlati (come le tabelle collegate) in un'unica query iniziale, invece di eseguire una query separata per ogni singolo record, problema noto per le N+1
+    $projects = Project::with('type')->orderBy('created_at', 'desc')->take(3)->get();
+
+    return view('welcome', compact('projects'));
 });
 
+//! Rotta per il dettaglio del singolo progetto --> visibile da tutti
+Route::get('/projects/{slug}', function ($slug) {
+    // cerca il progetto tramite lo slug
+    $project = Project::where('slug', $slug)->with('type')->firstOrFail();
+
+
+    return view('guest.projects.show', compact('project'));
+})->name('projects.show');
+
+
+// redirect automatico alla mia dashboard
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect()->route('admin.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -31,6 +52,8 @@ Route::middleware(['auth', 'verified'])
             ->name("profile");
 
         Route::resource('projects', ProjectController::class);
+
+        Route::resource('types', TypeController::class);
     });
 
 require __DIR__ . '/auth.php';

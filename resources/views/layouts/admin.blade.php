@@ -21,10 +21,23 @@
                 <span class="fs-4">Portfolio Admin</span>
             </a>
             <hr>
+            <!-- l'uso di "*" permette che la tipologia selezionata rimanga evidenziata anche se si entra nella show -->
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
                     <a href="{{ route('admin.index') }}" class="nav-link text-white {{ request()->routeIs('admin.index') ? 'active' : '' }}">
                         <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.projects.index') }}" class="nav-link text-white {{ request()->routeIs('admin.projects.*') ? 'active' : '' }}">
+                        <i class="bi bi-journal-code me-2"></i> Progetti
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.types.index') }}" class="nav-link text-white {{ request()->routeIs('admin.types.*') ? 'active' : '' }}">
+                        <i class="bi bi-tags me-2"></i> Tipologie
                     </a>
                 </li>
             </ul>
