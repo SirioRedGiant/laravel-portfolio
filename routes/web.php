@@ -8,15 +8,22 @@ use App\Models\Project;
 use Illuminate\Support\Facades\Route;
 
 
-//! Homepage pubblica
+//! Homepage pubblica mostra gli ultimi 3 progetti dal database.
 Route::get('/', function () {
-    // recupero gli ultimi 3 progetti dal database.
     // utilizzo --> 'with("type")' per ottimizzare le query (Eager Loading) che evita rallentamenti
     //note L'eager loading è una tecnica di ottimizzazione dei database che permette di caricare i dati correlati (come le tabelle collegate) in un'unica query iniziale, invece di eseguire una query separata per ogni singolo record, problema noto per le N+1
+
     $projects = Project::with('type')->orderBy('created_at', 'desc')->take(3)->get();
 
     return view('welcome', compact('projects'));
 });
+
+//! Rotta indice pubblico per tutti i progetti 
+Route::get('/projects', function () {
+    $projects = Project::with('type')->orderBy('created_at', 'desc')->paginate(9);
+
+    return view('guest.projects.index', compact('projects'));
+})->name('projects.index');
 
 //! Rotta per il dettaglio del singolo progetto --> visibile da tutti
 Route::get('/projects/{slug}', function ($slug) {

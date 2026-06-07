@@ -1,10 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container py-5">
-    <div class="mb-4">
-        <a href="{{ url('/') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
-            <i class="bi bi-arrow-left me-1"></i> Torna alla Home
+<div class="container py-5 flex-column">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <a href="{{ route('projects.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4 shadow-sm transition-hover">
+            <i class="bi bi-grid-3x3-gap me-2"></i> Torna ai Progetti
+        </a>
+
+        <a href="{{ url('/') }}" class="btn btn-outline-warning btn-sm rounded-pill px-4 shadow-sm transition-hover">
+            <i class="bi bi-house-door me-1"></i> Home Page
         </a>
     </div>
 

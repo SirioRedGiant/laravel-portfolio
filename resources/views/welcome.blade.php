@@ -59,5 +59,10 @@
         @endforelse
     </div>
 </div>
-
+<div class="text-center mt-5">
+    <a href="{{ route('projects.index') }}" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm hover-scale">
+        Esplora Tutto il Portfolio <i class="bi bi-arrow-right ms-2"></i>
+    </a>
+</div>
+</div>
 @endsection
