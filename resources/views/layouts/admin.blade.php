@@ -40,6 +40,11 @@
                         <i class="bi bi-tags me-2"></i> Tipologie
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.technologies.index') }}" class="nav-link text-white {{ request()->routeIs('admin.technologies.*') ? 'active' : '' }}">
+                        <i class="bi bi-cpu me-2"></i> Tecnologie
+                    </a>
+                </li>
             </ul>
             <hr>
             <div class="dropdown">
@@ -48,7 +53,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
                     <li>
-                        <a class="dropdown-menu-item px-3 text-white text-decoration-none" href="{{ route('logout') }}"
+                        <a class="dropdown-item px-3 text-white text-decoration-none" href="{{ route('logout') }}"
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             Sign out
                         </a>

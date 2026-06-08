@@ -9,6 +9,7 @@ class Technology extends Model
     protected $fillable = ['name', 'slug', 'color']; // per usare il mass assignment
 
 
+
     /**
      *  Relazione many to many
      */

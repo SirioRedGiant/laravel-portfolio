@@ -47,10 +47,7 @@
                             {{-- Elenco Tecnologie --}}
                             @if($project->technologies->isNotEmpty())
                             @foreach($project->technologies as $technology)
-                            <span class="badge rounded-pill px-3 py-2 fs-7 fw-semibold"
-                                style="background-color: {{ $technology->color }}15; color: {{ $technology->color }}; border: 1px solid {{ $technology->color }}40;">
-                                {{ $technology->name }}
-                            </span>
+                            <x-technology-badge :technology="$technology" />
                             @endforeach
                             @endif
                         </div>

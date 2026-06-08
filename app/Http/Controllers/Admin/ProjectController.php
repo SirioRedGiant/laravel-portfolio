@@ -89,6 +89,10 @@ class ProjectController extends Controller
      */
     public function show(Project $project) // utilizzo della Dependency Injection
     {
+        //note senza caricare in anticipo le relazioni --> Laravel dovrà fare una query al database per ogni singola tecnologia trovata nel ciclo foreach "il famoso problema N+1" e di consegueza rallenta la pagina.
+        // EAGER LOADING ==>  Carica in anticipo tipologia e tecnologie per ottimizzare le query
+        $project->load(['type', 'technologies']);
+
         // passa il singolo progetto alla vista "show"
         return view('admin.projects.show', compact('project'));
     }

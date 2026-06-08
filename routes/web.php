@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\TechnologyController;
 use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Project;
@@ -14,14 +15,14 @@ Route::get('/', function () {
     // utilizzo --> 'with("type")' per ottimizzare le query (Eager Loading) che evita rallentamenti
     //note L'eager loading è una tecnica di ottimizzazione dei database che permette di caricare i dati correlati (come le tabelle collegate) in un'unica query iniziale, invece di eseguire una query separata per ogni singolo record, problema noto per le N+1
 
-    $projects = Project::with('type')->orderBy('created_at', 'desc')->take(3)->get();
+    $projects = Project::with('type', 'technologies')->orderBy('created_at', 'desc')->take(3)->get();
 
     return view('welcome', compact('projects'));
 });
 
 //! Rotta indice pubblico per tutti i progetti 
 Route::get('/projects', function () {
-    $projects = Project::with('type')->orderBy('created_at', 'desc')->paginate(9);
+    $projects = Project::with('type', 'technologies')->orderBy('created_at', 'desc')->paginate(9);
 
     return view('guest.projects.index', compact('projects'));
 })->name('projects.index');
@@ -29,7 +30,7 @@ Route::get('/projects', function () {
 //! Rotta per il dettaglio del singolo progetto --> visibile da tutti
 Route::get('/projects/{slug}', function ($slug) {
     // cerca il progetto tramite lo slug
-    $project = Project::where('slug', $slug)->with('type')->firstOrFail();
+    $project = Project::where('slug', $slug)->with('type', 'technologies')->firstOrFail();
 
 
     return view('guest.projects.show', compact('project'));
@@ -67,6 +68,8 @@ Route::middleware(['auth', 'verified', 'admin'])
         Route::resource('projects', ProjectController::class);
 
         Route::resource('types', TypeController::class);
+
+        Route::resource('technologies', TechnologyController::class);
     });
 
 require __DIR__ . '/auth.php';

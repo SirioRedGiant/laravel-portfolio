@@ -34,11 +34,19 @@
                 {{-- <img src="{{ asset('storage/' . $project->image) }}" class="card-img-top" alt="{{ $project->title }}"> --}}
 
                 <div class="card-body">
-                    @if($project->type)
-                    <span class="badge bg-info text-dark mb-2">{{ $project->type->name }}</span>
-                    @else
-                    <span class="badge bg-secondary mb-2">Nessuna Categoria</span>
-                    @endif
+                    <div class="mb-3 d-flex flex-wrap gap-1 align-items-center">
+                        {{-- Tipologia/Categoria --}}
+                        @if($project->type)
+                        <span class="badge bg-info text-dark">{{ $project->type->name }}</span>
+                        @else
+                        <span class="badge bg-secondary">Nessuna Categoria</span>
+                        @endif
+
+                        {{-- 🆕 Tecnologie collegate al progetto --}}
+                        @foreach($project->technologies as $technology)
+                        <x-technology-badge :technology="$technology" />
+                        @endforeach
+                    </div>
 
                     <h5 class="card-title fw-bold">{{ $project->title }}</h5>
                     <p class="card-text text-muted">

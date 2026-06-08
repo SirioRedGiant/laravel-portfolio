@@ -41,6 +41,19 @@
                         @endif
                     </p>
 
+                    <p class="mb-4">
+                        <strong>Tecnologie:</strong>
+                        @if($project->technologies && $project->technologies->count() > 0)
+                        @foreach($project->technologies as $technology)
+
+                        <x-technology-badge :technology="$technology" />
+
+                        @endforeach
+                        @else
+                        <span class="badge bg-light text-dark">Nessuna tecnologia</span>
+                        @endif
+                    </p>
+
                     <h5>Descrizione del Progetto:</h5>
                     <p class="card-text text-secondary" style="white-space: pre-line;">
                         {{ $project->description ?? 'Nessuna descrizione fornita per questo progetto.' }}
