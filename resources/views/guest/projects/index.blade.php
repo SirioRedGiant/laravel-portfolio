@@ -28,8 +28,8 @@
                 @endif
 
                 <div class="card-body d-flex flex-column p-4">
-                    {{-- Badge Categoria --}}
-                    <div class="mb-3">
+                    {{-- Badge Categoria & Tecnologie --}}
+                    <div class="mb-3 d-flex flex-wrap gap-2 align-items-center">
                         @if($project->type)
                         <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2">
                             {{ $project->type->name }}
@@ -38,6 +38,17 @@
                         <span class="badge bg-secondary-subtle text-secondary rounded-pill px-3 py-2">
                             Nessuna categoria
                         </span>
+                        @endif
+
+                        {{-- Tecnologie del Progetto --}}
+                        @if($project->technologies->isNotEmpty())
+                        @foreach($project->technologies as $technology)
+                        <span class="badge rounded-pill px-2 py-1 fw-medium"
+                            style="{{ "background-color: {$technology->color}15; color: {$technology->color}; border: 1px solid {$technology->color}30; font-size: 0.75rem;" }}"
+                            title="{{ $technology->name }}">
+                            {{ $technology->name }}
+                        </span>
+                        @endforeach
                         @endif
                     </div>
 

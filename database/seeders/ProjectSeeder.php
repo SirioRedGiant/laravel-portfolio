@@ -3,9 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\Project;
+use App\Models\Technology;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Faker\Generator as Faker;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class ProjectSeeder extends Seeder
@@ -15,6 +17,10 @@ class ProjectSeeder extends Seeder
      */
     public function run(Faker $faker): void
     {
+
+        // recupero gli ID di tegnologies in TechnologySeeder e con il metodo --> pluck('id') estraggo solo gli ID restituendo una collezione e lo converto in array
+        $technologyIds = Technology::pluck('id')->toArray();
+
         for ($i = 0; $i < 10; $i++) {
             $project = new Project();
 
@@ -26,6 +32,14 @@ class ProjectSeeder extends Seeder
             $project->link_website = 'https://google.com';
 
             $project->save();
+
+            // genera un array di ID tech random per il singolo project --> randomElements prende un numero random tra 2 e 5 dell'ID dall'array delle technologies
+            // $randomTechs = $faker->randomElements($technologyIds, rand(2, 5)); --> ERRORE non funziona whyyyy?
+            $randomTechs = Arr::random($technologyIds, rand(2, 5));
+
+
+            // aggiungo le tech al progetto nella tabella pivot project_technology
+            $project->technologies()->attach($randomTechs);
         }
     }
 }
