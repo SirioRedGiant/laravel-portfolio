@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Support\Str; // la classe Str che serve per generare lo slug automaticamente dal titolo --> strumento per lo slug
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Models\Technology;
 use App\Models\Type;
 use Illuminate\Http\Request;
 
@@ -28,8 +29,9 @@ class ProjectController extends Controller
     public function create()
     {
         $types = Type::all();
+        $technologies = Technology::orderBy('name')->get();
 
-        return view('admin.projects.create', compact('types'));
+        return view('admin.projects.create', compact('types', 'technologies'));
     }
 
     /**
@@ -45,6 +47,8 @@ class ProjectController extends Controller
             'link_github' => 'nullable|url|max:255',
             'link_website' => 'nullable|url|max:255',
             'type_id' => 'nullable|exists:types,id', // exists:types,id --> evita che qualcuno manometta il form inviando ID inventati
+            'technologies' => 'nullable|array',
+            'technologies.*' => 'exists:technologies,id',
         ], [
             // notifiche personalizzate
             'title.required' => 'Hai dimenticato di inserire il titolo! È un campo obbligatorio.',
@@ -58,6 +62,8 @@ class ProjectController extends Controller
             'link_website.url' => 'L\'indirizzo del link non è valido. Deve iniziare con http:// o https://',
             'link_website.max' => 'L\'indirizzo del link fornito è troppo lungo, usa massimo 255 caratteri',
             'type_id.exists' => 'La tipologia selezionata non è valida o è stata manomessa.',
+            'technologies.array' => 'Il formato delle tecnologie selezionate non è valido.',
+            'technologies.*.exists' => 'Una o più tecnologie selezionate non sono valide.',
         ]);
 
         // ricava tutti i dati dal form
@@ -68,6 +74,11 @@ class ProjectController extends Controller
 
         // salva nel database usando i dati fillable
         $project = Project::create($data);
+
+        // se l'utente ha selezionato delle tecnologie --> le collega nella tabella pivot
+        if (isset($data['technologies'])) {
+            $project->technologies()->attach($data['technologies']);
+        }
 
         // reindirizzamento pagina tabella
         return redirect()->route('admin.projects.index')->with('success', 'Progetto creato con successo!');
@@ -88,8 +99,9 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $types = Type::all();
+        $technologies = Technology::orderBy('name')->get();
 
-        return view('admin.projects.edit', compact('project', 'types'));
+        return view('admin.projects.edit', compact('project', 'types', 'technologies'));
     }
 
     /**
@@ -106,6 +118,8 @@ class ProjectController extends Controller
             'link_github' => 'nullable|url|max:255',
             'link_website' => 'nullable|url|max:255',
             'type_id' => 'nullable|exists:types,id',
+            'technologies' => 'nullable|array',
+            'technologies.*' => 'exists:technologies,id',
         ], [
             // notifiche personalizzate
             'title.required' => 'Hai dimenticato di inserire il titolo! È un campo obbligatorio.',
@@ -119,6 +133,8 @@ class ProjectController extends Controller
             'link_website.url' => 'L\'indirizzo del link non è valido. Deve iniziare con http:// o https://',
             'link_website.max' => 'L\'indirizzo del link fornito è troppo lungo, usa massimo 255 caratteri',
             'type_id.exists' => 'La tipologia selezionata non è valida o è stata manomessa.',
+            'technologies.array' => 'Il formato delle tecnologie selezionate non è valido.',
+            'technologies.*.exists' => 'Una o più tecnologie selezionate non sono valide.',
         ]);
 
         // così si prendono tutti i data, ma c'è la possibilità che vengano passati dati malevoli
@@ -127,8 +143,12 @@ class ProjectController extends Controller
         // ricalcolo dello slug dato il titolo appena validato
         $data['slug'] = Str::slug($data['title'], '-');
 
-        // aggiorna l'oggetto
+        // aggiorna l'oggetto --> cioè aggiorna i dati del progetto
         $project->update($data);
+
+
+        // sincronizza la tabella pivot. Se l'utente deseleziona tutto, $data['technologies'] non esisterà, quindi gli dò un array vuoto [] per fare pulizia.
+        $project->technologies()->sync($request->technologies ?? []);
 
         return redirect()->route('admin.projects.index')->with('success', 'Progetto modificato con successo!');
     }

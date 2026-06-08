@@ -54,6 +54,32 @@
                 @enderror
             </div>
 
+            {{-- Tecnologie --}}
+            <div class="mb-3">
+                <label class="form-label d-block">Tecnologie Utilizzate</label>
+                <div class="row g-2">
+                    @foreach($technologies as $technology)
+                    <div class="col-md-3 col-sm-4 col-6">
+                        <div class="form-check">
+                            {{-- le parentesi quadre dicono a PHP che si sta inviando un array di ID multipli. Con old('technologies', []) => old('technologies', []) se per caso un utente sbaglia il form questa riga controlla quali caselle aveva già spuntato prima dell'errore e le mantiene attive --}}
+                            <input class="form-check-input @error('technologies') is-invalid @enderror"
+                                type="checkbox"
+                                name="technologies[]"
+                                value="{{ $technology->id }}"
+                                id="tech-{{ $technology->id }}"
+                                {{ in_array($technology->id, old('technologies', [])) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="tech-{{ $technology->id }}">
+                                {{ $technology->name }}
+                            </label>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                @error('technologies')
+                <div class="text-danger small mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
             <div class="mb-3">
                 <label for="description" class="form-label">Descrizione</label>
                 <textarea class="form-control @error('description') is-invalid @enderror"

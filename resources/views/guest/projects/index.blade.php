@@ -44,7 +44,7 @@
                         @if($project->technologies->isNotEmpty())
                         @foreach($project->technologies as $technology)
                         <span class="badge rounded-pill px-2 py-1 fw-medium"
-                            style="{{ "background-color: {$technology->color}15; color: {$technology->color}; border: 1px solid {$technology->color}30; font-size: 0.75rem;" }}"
+                            style="background-color: {{ $technology->color . '15' }}; color: {{ $technology->color }}; border: 1px solid {{ $technology->color . '30' }}; font-size: 0.75rem;"
                             title="{{ $technology->name }}">
                             {{ $technology->name }}
                         </span>
