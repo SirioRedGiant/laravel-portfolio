@@ -18,7 +18,7 @@
 
         <nav id="sidebar" class="bg-dark text-white p-3" style="width: 280px;">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                <span class="fs-4">Portfolio Admin</span>
+                <span class="fs-4">Home</span>
             </a>
             <hr>
             <!-- l'uso di "*" permette che la tipologia selezionata rimanga evidenziata anche se si entra nella show -->

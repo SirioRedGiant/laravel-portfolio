@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Project;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
@@ -35,11 +36,15 @@ Route::get('/projects/{slug}', function ($slug) {
 })->name('projects.show');
 
 
-// redirect automatico alla mia dashboard
+//! redirect automatico basato sul ruolo dell'utente ==> se è admin va alla dashboard altrimenti lo idirizza alla homepage comune(index)
 Route::get('/dashboard', function () {
-    return redirect()->route('admin.index');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
+    if (Auth::user()->is_admin) {
+        return redirect()->route('admin.index');
+    }
+
+    return redirect()->route('projects.index')->with('status', 'Registrazione effettuata con successo!');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -47,7 +52,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'verified'])
+// affinché la parola 'admin' funzioni dentro questa Route::middleware(), bisonga aver detto a Laravel a quale classe corrisponde quel soprannome. GUARDA BOOTSTRAP/APP.PHP
+Route::middleware(['auth', 'verified', 'admin'])
     ->name('admin.')
     ->prefix("admin")
     ->group(function () {
